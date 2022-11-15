@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Font Style -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Scada&display=swap" rel="stylesheet">
+<!-- CSS Script - Bootstrap -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="./index.css">
+	<title>Easy Computation Tool for JRC Team</title>
+</head>
+<body>
+
+<!-- Simple NAV -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container">
+    <a class="navbar-brand" href="#">Computation Tool</a>
+  </div>
+</nav>
+
+<div class="container" id="comp">
+	<div class="row">
+		<div class="col-12 col-md-5 mt-3">
+			<form class="border pl-3 pt-3 pb-3 pr-4 rounded-lg border-sm" id="formstyle">
+					<div class="form-group row">
+								<label for="property" class="col-6 col-form-label">Property</label>
+								<select id="property"class="custom-select custom-select-md col-6 text-right">
+										<option value="1">House and Lot/Condo</option>
+							  		<option value="2">Lot Only</option>
+								</select>					
+					</div>
+  				<div class="form-group row">
+    						<label for="sellingPrice" class="col-6 col-form-label">Selling Price</label>
+    						<div class="col-6" id="input-d">
+      							<input type="number" class="form-control text-right" id="sellingPrice" placeholder="> input price here">
+    						</div>
+  				</div>			
+  				<div class="form-group row">
+  							<label for="paymentType" class="col-6 col-form-label">Payment Scheme</label>
+  							<select id="paymentType"class="custom-select custom-select-md col-6 text-right">
+  						  		<option selected>Choose</option>
+  						  		<option value="1">Stretched 20%DP, 80% Bank</option>
+  						  		<option value="2">Spot 10% DP, Stretched 10%DP, 80% Bank</option>
+  						  		<option value="3">Spot 20% DP, 80% Bank</option>
+  						  		<option value="4">100% Spot Cash</option>
+  						  		<option value="5">Spot 20%DP, 80% Deferred</option>
+  							</select>					
+  				</div>
+ 					<div class="form-group row">
+ 								<label for="monthsToPay" class="col-9 col-form-label">Months Payable (if NOT SpotCash)</label>
+ 								<select id="monthsToPay"class="custom-select custom-select-md col-3 text-right">
+ 										<option value="6">6</option>
+ 							  		<option value="12">12</option>
+ 							  		<option value="18">18</option>
+ 							  		<option value="24">24</option>
+ 							  		<option value="36">36</option>
+ 							  		<option value="48">48</option>
+ 								</select>					
+ 					</div>
+ 					<div class="form-group row">
+ 	  						<label for="reserveFee" class="col-6 col-form-label">Reservation Fee</label>
+ 	  						<div class="col-6" id="input-d">
+ 	    							<input type="number" class="form-control text-right" id="reserveFee" placeholder="> input reservation fee">
+ 	  						</div>
+ 					</div>				
+   				<div class="form-group row">
+   					    <label for="standardDiscount" class="col-6 col-form-label">Standard Discount</label>
+ 								<select id="standardDiscount" class="custom-select custom-select-md col-6 text-right">
+										<option value="5">Do not apply</option>
+ 							  		<option value="1">5% Discount on 10%SFDP</option>
+ 							  		<option value="2">10% Discount on 10%SFDP</option>
+ 							  		<option value="3">5% Spot Cash Discount</option>
+ 							  		<option value="4">7% Spot Cash Discount</option>
+ 								</select>
+ 					</div> 				
+  				<div class="form-group row">
+   							<label for="bsDiscount" class="col-6 col-form-label">Booking/CS Discount</label>
+    						<div class="col-6" id="input-d">
+      							<input type="number" class="form-control text-right" id="bsDiscount" placeholder="> input discount here">
+    						</div>
+  				</div>
+  				<div class="form-group row">
+   							<label for="specialDiscount" class="col-6 col-form-label">Other Discount</label>
+    						<div class="col-6" id="input-d">
+      							<input type="number" class="form-control text-right" id="specialDiscount" placeholder="> input discount here">
+    						</div>
+  				</div>
+  				<div class="form-group row">
+    						<label for="paytermFee" class="col-6 col-form-label">Payterm Fee</label>
+    						<div class="col-6" id="input-d">
+      							<input type="number" class="form-control text-right" id="paytermFee" placeholder="> input payterm fee">
+    						</div>
+  				</div>					
+
+					<button class="btn btn-warning btn-md btn-block" onclick="compute(); return false;">Compute</button>
+
+			</form>
+		</div>
+
+		<div class="col-12 col-md-7 mt-3">
+			<div class="col-12 col-md-10 offset-md-1">
+				<table class="table table-striped table-dark rounded-lg">
+				  <thead>
+				    <tr>
+				      <th scope="col" colspan="8" class="text-center"><h5>Sample Computation</h5></th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr>
+				      <th scope="row" colspan="4">Selling Price (SP)</th>
+				      	<td colspan="4" id="output1" class="text-right"></td>
+				    </tr>
+				    <tr>
+				      <th scope="row" colspan="1">Less:</th>
+				      	<td colspan="3" class="pl-0">VAT</td>
+				      	<td colspan="4" id="output2" class="text-right"></td>
+				    </tr>
+				    <tr>
+				      <th scope="row" colspan="1"></th>
+				      	<td colspan="3" class="pl-0">Standard Disc.</td>
+				      	<td colspan="4" id="output3" class="text-right">--</td>
+				    </tr>
+				    <tr>
+				      <th scope="row" colspan="1"></th>
+				      	<td colspan="3" class="pl-0">BS/CS Disc.</td>
+				      	<td colspan="4" id="output4" class="text-right">--</td>
+				    </tr>
+				    <tr>
+				      <th scope="row" colspan="1"></th>
+				      	<td colspan="3" class="pl-0">Other Disc.</td>
+				      	<td colspan="4" id="output5" class="text-right">--</td>
+				    </tr>
+				    <tr>
+				      <th scope="row" colspan="4">SP After Disc.</th>
+				      	<td colspan="4" id="output6" class="text-right"></td>
+				    </tr>
+				    <tr>
+				      <th scope="row" colspan="1">Add:</th>
+				      	<td colspan="3" class="pl-0">VAT</td>
+				      	<td colspan="4" id="output7" class="text-right"></td>
+				    </tr>
+				    <tr>
+				      <th scope="row" colspan="1"></th>
+				      	<td colspan="3" class="pl-0">Other Charges</td>
+				      	<td colspan="4" id="output8" class="text-right"></td>
+				    </tr>
+				    <tr>
+				      <th scope="row" colspan="4">Total Selling Price</th>
+				      	<td colspan="4" id="output9" class="text-right"></td>
+				    </tr>
+				    <tr>
+				      <th scope="row" colspan="4"></th>
+				      	<td colspan="4"></td>
+				    </tr>
+				    <tr class="text-warning">
+				      	<td colspan="4" id="output10" class="center"></td>
+				      	<td colspan="4" id="output11" class="text-right"></td>
+				    </tr>
+				    <tr class="text-warning">
+				      	<td colspan="4" id="output12" class="center"></td>
+				      	<td colspan="4" id="output13" class="text-right"></td>
+				    </tr>
+				    <tr class="text-warning">
+				      	<td colspan="4" id="output14" class="center"></td>
+				      	<td colspan="4" id="output15" class="text-right"></td>
+				    </tr>
+				    <tr class="text-info">
+				      <td colspan="4" id="output16" class="center"></td>
+				      <td colspan="4" id="output17" class="text-right"></td>
+				    </tr>
+				    <tr class="text-info">
+				      <td colspan="4" id="output18" class="center"></td>
+				      <td colspan="4" id="output19" class="text-right"></td>
+				    </tr>
+				    <tr class="text-info">
+				      <td colspan="4" id="output20" class="center"></td>
+				      <td colspan="4" id="output21" class="text-right"></td>
+				    </tr>
+				  </tbody>
+				</table>
+			</div>
+		</div>
+</div>
+</div>
+
+<script type="text/javascript">
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+
+
+function compute(){
+	let propertyChosen = document.getElementById("property").value;
+	let rawPrice = document.getElementById("sellingPrice").value; // gets raw price from input # 1
+	let checkPrice = rawPrice || 0 ; // checks if rawPrice is NaN or no input was made, value will automatically be 0
+	let finalPrice = 0;
+	let vat = 0;
+	if (propertyChosen == 1){
+			if (checkPrice >= 3583105){
+				finalPrice = parseInt(checkPrice);
+				vat = parseInt(finalPrice / 1.12 * .12);
+			}
+			else if (checkPrice <= 3199200){
+				finalPrice = parseInt(checkPrice);
+			}
+			else if (checkPrice > 3199200 && checkPrice < 3583105){
+				finalPrice = parseInt(checkPrice * 1.12);
+				vat = parseInt(finalPrice / 1.12 * .12);
+			};
+	}
+	else if (propertyChosen == 2){
+			if (checkPrice >= 1680000){
+				finalPrice = parseInt(checkPrice);
+				vat = parseInt(finalPrice / 1.12 * .12);
+			}
+			else if (checkPrice <= 1500000){
+				finalPrice = parseInt(checkPrice);
+			}
+			else if (checkPrice > 1500000 && checkPrice < 1680000){
+				finalPrice = parseInt(checkPrice * 1.12);
+				vat = parseInt(finalPrice / 1.12 * .12);
+			}
+	};
+
+	let displayPrice = numberWithCommas(finalPrice); // all variables starting with "display" will be used for the table as display values
+
+	let displayVat = numberWithCommas(vat);
+
+	let netVat = parseInt(finalPrice) - parseInt(vat);
+
+	let rawPayment = document.getElementById("paymentType").value; // gets raw value from input/dropdown # 2
+	let payment = rawPayment || parseInt(0) ; // checks if rawPrice is NaN or no input was made, value will automatically be 0
+
+	let months = document.getElementById("monthsToPay").value; // gets raw value from input/dropdown # 3
+
+	let checkReservationFee = document.getElementById("reserveFee").value; // gets raw value from input # 4
+	let reservationFee = checkReservationFee || 0;
+	let displayReservationFee = numberWithCommas(reservationFee);
+
+	let bookDiscount = document.getElementById("bsDiscount").value;
+	let checkBookDiscount = bookDiscount || 0 ;
+	let displayBookDiscount = numberWithCommas(parseFloat(checkBookDiscount));
+
+	let otherDiscount = document.getElementById("specialDiscount").value;
+	let checkOtherDiscount = otherDiscount || 0 ;
+	let displayOtherDiscount = numberWithCommas(parseFloat(checkOtherDiscount));
+
+	let stdDiscount = document.getElementById("standardDiscount").value;
+	let checkStdDiscount = stdDiscount || parseInt(5) ;
+
+	let stdDiscount1 = parseInt(netVat * .1 * .05);
+	let stdDiscount2 = parseInt(netVat * .1 * .1);
+	let stdDiscount3 = parseInt(netVat * .05);
+	let stdDiscount4 = parseInt(netVat * .07);
+	let displayStdDiscount1 = numberWithCommas(stdDiscount1);
+	let displayStdDiscount2 = numberWithCommas(stdDiscount2);
+	let displayStdDiscount3 = numberWithCommas(stdDiscount3);
+	let displayStdDiscount4 = numberWithCommas(stdDiscount4);
+
+	let rawOtherFee = document.getElementById("paytermFee").value;
+	let checkOtherFee = rawOtherFee || 0;
+	let otherFee = parseInt(checkOtherFee);
+
+
+			if (payment == 1 && checkStdDiscount == 1){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `20%DP Payable for ${months} months:`;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt(((totalSellingPrice * .2) - reservationFee) / months)) + " / month";
+				document.getElementById("output14").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output18").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 1 && checkStdDiscount == 2){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `20%DP Payable for ${months} months:`;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt(((totalSellingPrice * .2) - reservationFee) / months)) + " / month";
+				document.getElementById("output14").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output18").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 1 && checkStdDiscount == 3){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `20%DP Payable for ${months} months:`;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt(((totalSellingPrice * .2) - reservationFee) / months)) + " / month";
+				document.getElementById("output14").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output18").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 1 && checkStdDiscount == 4){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1     ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `20%DP Payable for ${months} months:`;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt(((totalSellingPrice * .2) - reservationFee) / months)) + " / month";
+				document.getElementById("output14").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output18").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 1 && checkStdDiscount == 5){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `20%DP Payable for ${months} months:`;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt(((totalSellingPrice * .2) - reservationFee) / months)) + " / month";
+				document.getElementById("output14").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output18").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 2 && checkStdDiscount == 1){
+				let afterDiscounts = parseInt(netVat - stdDiscount1 - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = displayStdDiscount1;
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = "Spot 10% DP: " ;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .1) - reservationFee));
+				document.getElementById("output14").innerHTML = `10%DP Payable for ${months} months:`;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .1) / months)) + " / month";
+				document.getElementById("output16").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output18").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output20").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output21").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+			}
+			else if (payment == 2 && checkStdDiscount == 2){
+				let afterDiscounts = parseInt(netVat - stdDiscount2 - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = displayStdDiscount2;
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1     ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = "Spot 10% DP: " ;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .1) - reservationFee));
+				document.getElementById("output14").innerHTML = `10%DP Payable for ${months} months:`;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .1) / months)) + " / month";
+				document.getElementById("output16").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output18").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output20").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output21").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+			}
+			else if (payment == 2 && checkStdDiscount == 3){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = "Spot 10% DP: " ;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .1) - reservationFee));
+				document.getElementById("output14").innerHTML = `10%DP Payable for ${months} months:`;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .1) / months)) + " / month";
+				document.getElementById("output16").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output18").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output20").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output21").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+			}
+			else if (payment == 2 && checkStdDiscount == 4){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1     ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = "Spot 10% DP: " ;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .1) - reservationFee));
+				document.getElementById("output14").innerHTML = `10%DP Payable for ${months} months:`;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .1) / months)) + " / month";
+				document.getElementById("output16").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output18").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output20").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output21").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+			}
+			else if (payment == 2 && checkStdDiscount == 5){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = "Spot 10% DP: " ;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .1) - reservationFee));
+				document.getElementById("output14").innerHTML = `10%DP Payable for ${months} months:`;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .1) / months)) + " / month";
+				document.getElementById("output16").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output18").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output20").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output21").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+			}
+			else if (payment == 3 && checkStdDiscount == 1){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `Spot 20% DP: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .2) - reservationFee));
+				document.getElementById("output14").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output18").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 3 && checkStdDiscount == 2){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `Spot 20% DP: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .2) - reservationFee));
+				document.getElementById("output14").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output18").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 3 && checkStdDiscount == 3){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `Spot 20% DP: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .2) - reservationFee));
+				document.getElementById("output14").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output18").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 3 && checkStdDiscount == 4){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `Spot 20% DP: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .2) - reservationFee));
+				document.getElementById("output14").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output18").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 3 && checkStdDiscount == 5){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `Spot 20% DP: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .2) - reservationFee));
+				document.getElementById("output14").innerHTML = "80% Bank Financed: " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = "15 years at 7.5% interest: ";
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0092701)) + " / month";
+				document.getElementById("output18").innerHTML = "10 years at 7.5% interest: ";
+				document.getElementById("output19").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8 * 0.0118702)) + " / month";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 4 && checkStdDiscount == 1){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1     ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `100% Spot Cash Amount: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt(totalSellingPrice - reservationFee));
+				document.getElementById("output14").innerHTML = "";
+				document.getElementById("output15").innerHTML = "";
+				document.getElementById("output16").innerHTML = "";
+				document.getElementById("output17").innerHTML = "";
+				document.getElementById("output18").innerHTML = "";
+				document.getElementById("output19").innerHTML = "";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 4 && checkStdDiscount == 2){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `100% Spot Cash Amount: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt(totalSellingPrice - reservationFee));
+				document.getElementById("output14").innerHTML = "";
+				document.getElementById("output15").innerHTML = "";
+				document.getElementById("output16").innerHTML = "";
+				document.getElementById("output17").innerHTML = "";
+				document.getElementById("output18").innerHTML = "";
+				document.getElementById("output19").innerHTML = "";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 4 && checkStdDiscount == 3){
+				let afterDiscounts = parseInt(netVat - stdDiscount3 - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = displayStdDiscount3;
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `100% Spot Cash Amount: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt(totalSellingPrice - reservationFee));
+				document.getElementById("output14").innerHTML = "";
+				document.getElementById("output15").innerHTML = "";
+				document.getElementById("output16").innerHTML = "";
+				document.getElementById("output17").innerHTML = "";
+				document.getElementById("output18").innerHTML = "";
+				document.getElementById("output19").innerHTML = "";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 4 && checkStdDiscount == 4){
+				let afterDiscounts = parseInt(netVat - stdDiscount4 - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = displayStdDiscount4;
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1     ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `100% Spot Cash Amount: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt(totalSellingPrice - reservationFee));
+				document.getElementById("output14").innerHTML = "";
+				document.getElementById("output15").innerHTML = "";
+				document.getElementById("output16").innerHTML = "";
+				document.getElementById("output17").innerHTML = "";
+				document.getElementById("output18").innerHTML = "";
+				document.getElementById("output19").innerHTML = "";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 4 && checkStdDiscount == 5){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `100% Spot Cash Amount: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt(totalSellingPrice - reservationFee));
+				document.getElementById("output14").innerHTML = "";
+				document.getElementById("output15").innerHTML = "";
+				document.getElementById("output16").innerHTML = "";
+				document.getElementById("output17").innerHTML = "";
+				document.getElementById("output18").innerHTML = "";
+				document.getElementById("output19").innerHTML = "";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 5 && checkStdDiscount == 1){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `Spot 20% DP: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .2) - reservationFee));
+				document.getElementById("output14").innerHTML = "80% Deferred Amount " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = `Payable for ${months} months:`;
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt((totalSellingPrice * 0.8) / months)) + " / month";
+				document.getElementById("output18").innerHTML = "";
+				document.getElementById("output19").innerHTML = "";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+
+			}
+			else if (payment == 5 && checkStdDiscount == 2){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `Spot 20% DP: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .2) - reservationFee));
+				document.getElementById("output14").innerHTML = "80% Deferred Amount " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = `Payable for ${months} months:`;
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt((totalSellingPrice * 0.8) / months)) + " / month";
+				document.getElementById("output18").innerHTML = "";
+				document.getElementById("output19").innerHTML = "";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 5 && checkStdDiscount == 3){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `Spot 20% DP: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .2) - reservationFee));
+				document.getElementById("output14").innerHTML = "80% Deferred Amount " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = `Payable for ${months} months:`;
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt((totalSellingPrice * 0.8) / months)) + " / month";
+				document.getElementById("output18").innerHTML = "";
+				document.getElementById("output19").innerHTML = "";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 5 && checkStdDiscount == 4){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `Spot 20% DP: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .2) - reservationFee));
+				document.getElementById("output14").innerHTML = "80% Deferred Amount " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = `Payable for ${months} months:`;
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt((totalSellingPrice * 0.8) / months)) + " / month";
+				document.getElementById("output18").innerHTML = "";
+				document.getElementById("output19").innerHTML = "";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else if (payment == 5 && checkStdDiscount == 5){
+				let afterDiscounts = parseInt(netVat - bookDiscount - otherDiscount);
+				let displayAfterDiscounts = numberWithCommas(afterDiscounts);
+
+				let addBackVat = 0;
+				if (propertyChosen == 1){
+						if (afterDiscounts <= 3199200){
+							addBackVat = addBackVat;
+						}
+						else if (afterDiscounts > 3199200){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						};	
+				}
+				else if (propertyChosen == 2){
+						if (afterDiscounts <= 1500000){
+							addBackVat = addBackVat;
+						}
+						else if (checkPrice > 1500000){
+							addBackVat = parseInt(afterDiscounts / 1.12 * .12);
+						}
+				};
+				let displayAddBackVat = numberWithCommas(addBackVat);
+
+				let otherCharges = parseInt(afterDiscounts * .07 + otherFee);
+				let displayOtherCharges = numberWithCommas(otherCharges);
+
+				let totalSellingPrice = parseInt(afterDiscounts + addBackVat + otherCharges);
+				let displayTotalSellingPrice = numberWithCommas(totalSellingPrice);
+
+	  		document.getElementById("output1").innerHTML = `\u20B1      ${displayPrice}`;
+				document.getElementById("output2").innerHTML = displayVat;
+				document.getElementById("output3").innerHTML = "N/A";
+				document.getElementById("output4").innerHTML = displayBookDiscount;
+				document.getElementById("output5").innerHTML = displayOtherDiscount;
+				document.getElementById("output6").innerHTML = `\u20B1      ${displayAfterDiscounts}`;
+				document.getElementById("output7").innerHTML = displayAddBackVat;
+				document.getElementById("output8").innerHTML = displayOtherCharges;
+				document.getElementById("output9").innerHTML = `\u20B1     ${displayTotalSellingPrice}`;
+				document.getElementById("output10").innerHTML = "Reservation Fee: " ;
+				document.getElementById("output11").innerHTML = displayReservationFee;
+				document.getElementById("output12").innerHTML = `Spot 20% DP: `;
+				document.getElementById("output13").innerHTML = numberWithCommas(parseInt((totalSellingPrice * .2) - reservationFee));
+				document.getElementById("output14").innerHTML = "80% Deferred Amount " ;
+				document.getElementById("output15").innerHTML = numberWithCommas(parseInt(totalSellingPrice * 0.8));
+				document.getElementById("output16").innerHTML = `Payable for ${months} months:`;
+				document.getElementById("output17").innerHTML = numberWithCommas(parseInt((totalSellingPrice * 0.8) / months)) + " / month";
+				document.getElementById("output18").innerHTML = "";
+				document.getElementById("output19").innerHTML = "";
+				document.getElementById("output20").innerHTML = "";
+				document.getElementById("output21").innerHTML = "";
+			}
+			else{
+				document.getElementById("output1").innerHTML = "Select Payment Scheme First";
+				alert("No Payment Scheme Selected");
+			}
+
+		};
+</script>
+
+
+
+
+<!-- JS Bootstrap Script -->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+
+
+</body>
+</html>

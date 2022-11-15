@@ -1,0 +1,29 @@
+#input-d{
+	padding-right: 0px;
+	padding-left: 0px!important;
+}
+
+
+body{
+	font-family: 'Scada', sans-serif;
+	font-size: 0.9rem;
+}
+
+#formstyle{
+	border-style: outset!important;
+	border-width: 2px!important;
+}
+
+table{
+	font-size: 0.9rem;
+	line-height: 0.8rem!important;
+}
+
+tr{
+	padding-top: 1rem!important;
+}
+
+h5{
+	text-decoration: underline;
+	line-height: 0.7rem!important;
+}
